@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gorakhpur Zone NCRP Lien Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="app-panel">
+            <div class="masthead">
+                <div>
+                    <p class="eyebrow">NCRP Lien Reporting System</p>
+                    <h1>Gorakhpur Zone Daily Report Generator</h1>
+                </div>
+                <span class="status-pill">PDF + Excel</span>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages" aria-live="polite">
+                        {% for category, message in messages %}
+                            <div class="message {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form id="reportForm" method="post" enctype="multipart/form-data" novalidate>
+                <div class="upload-grid">
+                    <label class="drop-zone" for="cumulative_csv">
+                        <input id="cumulative_csv" name="cumulative_csv" type="file" accept=".csv" required>
+                        <span class="upload-icon" aria-hidden="true">CSV</span>
+                        <span class="upload-title">Cumulative CSV</span>
+                        <span class="upload-text">Drag file here or click to choose</span>
+                        <span class="file-name" data-file-label="cumulative_csv">No file selected</span>
+                    </label>
+
+                    <label class="drop-zone" for="daily_csv">
+                        <input id="daily_csv" name="daily_csv" type="file" accept=".csv" required>
+                        <span class="upload-icon" aria-hidden="true">CSV</span>
+                        <span class="upload-title">Daily CSV</span>
+                        <span class="upload-text">Drag file here or click to choose</span>
+                        <span class="file-name" data-file-label="daily_csv">No file selected</span>
+                    </label>
+                </div>
+
+                <div class="actions">
+                    <button class="primary-btn" type="submit">Generate Report</button>
+                    <button class="secondary-btn" type="reset">Clear Files</button>
+                </div>
+
+                <div id="progress" class="progress" hidden>
+                    <div class="progress-bar"><span></span></div>
+                    <p>Processing report. Please wait...</p>
+                </div>
+            </form>
+
+            {% if download_links %}
+                <section class="result-panel">
+                    <div>
+                        <h2>Report Ready</h2>
+                        {% if report_meta %}
+                            <p>Generated: {{ report_meta.generated }}</p>
+                            <p>Previous period: {{ report_meta.period }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="download-actions">
+                        <a class="download-btn pdf" href="{{ download_links.pdf }}">Download PDF</a>
+                        <a class="download-btn excel" href="{{ download_links.excel }}">Download Excel</a>
+                    </div>
+                </section>
+            {% endif %}
+        </section>
+    </main>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
